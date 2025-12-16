@@ -24,4 +24,8 @@ response = requests.get(url)
 soup = bs4.BeautifulSoup(response.text, 'html.parser')
 divs = soup.find_all(class_='emojis')
 if arts := [t for t in [e.contents[0].text for e in divs] if check(t)]:
-    print('\033[97m', random.choice(arts), '\033[0m', sep='')
+    number = random.randrange(len(arts))
+    print('\033[97m' + arts[number] + '\033[0m',
+          f'Art: {number+1} / {len(arts)}', sep='\n')
+else:
+    print('No art found v_v')
