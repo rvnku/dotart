@@ -4,22 +4,20 @@ shows random dot art in your terminal
 
 ## Install
 
+For install and adding into PATH run this command:
+
 ```bash
 git clone https://github.com/rvnku/dotart.git && \
-cd dotart && \
 mkdir -p ~/.local/bin/res && \
-cp -r dotart res ~/.local/bin
+cp -r dotart/dotart dotart/res ~/.local/bin && \
+rm -rf dotart
 ```
 
-After that you can remove repository using the next command:
-
-```bash
-cd .. && rm -r dotart
-```
+If `.local/bin` is not in the PATH, you must add it there yourself.
 
 The script used python >=3.7 with libraries requests and Beautiful Soup.
 
-For its install run:
+For install them, run:
 
 ```bash
 pip install requests beautifulsoup4
