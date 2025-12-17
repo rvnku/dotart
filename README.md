@@ -13,7 +13,11 @@ cp -r dotart/dotart dotart/res ~/.local/bin && \
 rm -rf dotart
 ```
 
-If `.local/bin` is not in the PATH, you must add it there yourself.
+If `.local/bin` is not in the PATH, you must add it there yourself:
+
+```bash
+export PATH="$PATH:~/.local/bin/"
+```
 
 The script used python >=3.7 with libraries requests and Beautiful Soup.
 
