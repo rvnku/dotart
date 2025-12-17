@@ -51,6 +51,8 @@ $ dotart boykisser
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠻⠻⠶⠿⠿⠷⠷⠿⠿⠾⠶⠶⠶⠶⠿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ```
 
+Or use `-i` option for interactive view for all arts
+
 ## Uninstall
 
 For uninstall remove just `dotart` and `res/dotart.py` files from `~/.local/bin` directory:
