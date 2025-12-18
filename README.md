@@ -19,14 +19,14 @@ If `.local/bin` is not in the PATH, you must add it there yourself:
 export PATH="$PATH:~/.local/bin/"
 ```
 
-The script used python >=3.7 with libraries requests and Beautiful Soup.
+The script used python >=3.10 with libraries requests, Beautiful Soup and Pillow.
 
 For install them, run:
 
 ```bash
-pip install requests beautifulsoup4
+pip install requests beautifulsoup4 pillow
 # or
-pipx install requests beautifulsoup4
+pipx install requests beautifulsoup4 pillow
 ```
 
 ## Usage
