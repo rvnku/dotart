@@ -14,8 +14,17 @@ ALLOWED = ''\
     + '🔴🟠🟡🟢🔵🟣🟤⚫⚪'
 
 OPTIONS = {
-    '-i': 'interactive mode'
+    '-c': 'create art by yourself',
+    '-i': 'interactive mode',
+    '-t': 'set threshold',
+    '-x': 'set width',
+    '-y': 'set height',
 }
+
+BRAILLE_BITS = [
+    (0, 0, 0x01), (0, 1, 0x02), (0, 2, 0x04), (0, 3, 0x40),
+    (1, 0, 0x08), (1, 1, 0x10), (1, 2, 0x20), (1, 3, 0x80),
+]
 
 
 def check(text: str) -> bool:
@@ -42,19 +51,93 @@ def show(bd: list, index: int, hint: bool = False) -> int:
     print('\033[97m' + bd[index] + '\033[0m',
           f'Art: {index+1} / {len(bd)}', sep='\n')
     if hint:
-        print('[←→ to move, enter to exit]')
+        print('[←→ move | enter exit]')
     return len(bd[index].split('\n')) + 1 + hint
 
 
-query = sys.argv[1:]
-args = query.pop(0) if query[0] in OPTIONS else None
-url = f'https://emojicombos.com/{'-'.join(query)}'
-response = requests.get(url)
-soup = bs4.BeautifulSoup(response.text, 'html.parser')
-divs = soup.find_all(class_='emojis')
-if arts := [t for t in [e.contents[0].text for e in divs] if check(t)]:
-    match args:
-        case '-i':
+def get_arts(query: str) -> list[str]:
+    url = f'https://emojicombos.com/{query}'
+    response = requests.get(url)
+    soup = bs4.BeautifulSoup(response.text, 'html.parser')
+    divs = soup.find_all(class_='emojis')
+    return list(t for t in [e.contents[0].text for e in divs] if check(t))
+
+
+def img2braile(path: str, cols: int = None, rows: int = None, threshold: int = None) -> str:
+    from PIL import Image
+
+    img = Image.open(path).convert('L')
+
+    x, y = img.size
+    ratio = x / y
+
+    if cols:
+        rows = rows or int(cols / ratio / 2)
+    else:
+        cols = int((rows or (rows := 25)) * ratio * 2)
+
+    img = img.resize((cols * 2, rows * 4))
+    pixels = img.load()
+
+    threshold = threshold or sum(img.getdata()) // (cols * rows * 8)
+
+    art = []
+    for y in range(0, img.height, 4):
+        line = ''
+        for x in range(0, img.width, 2):
+            code = 0x2800
+            for dx, dy, bit in BRAILLE_BITS:
+                if pixels[x + dx, y + dy] < threshold:
+                    code |= bit
+            line += chr(code)
+        art.append(line)
+
+    return '\n'.join(art), cols, rows, threshold
+
+
+def create(path: str, cols: int = None, rows: int = None, threshold: int = None):
+    while 1:
+        art, cols, rows, threshold = img2braile(path, cols, rows, threshold)
+        sys.stdout.write('\033[H\033[J')
+        print(art)
+        print(f'Threshold: {threshold} | Size: {cols}x{rows}')
+        print('[←→ threshold | ↑↓ size | enter exit]')
+
+        key = read_key()
+
+        if key == '\x1b[D':
+            threshold = max(5, threshold - 5)
+        elif key == '\x1b[C':
+            threshold = min(255, threshold + 5)
+        elif key == '\x1b[A':
+            cols, rows = None, min(100, rows + 1)
+        elif key == '\x1b[B':
+            cols, rows = None, max(5, rows - 1)
+        elif key == '\r':
+            break
+
+
+args, opts = sys.argv[1:], []
+while args[0][:2] in OPTIONS:
+    opts.append(args.pop(0))
+
+
+if '-c' in opts:
+    path = args[0]
+    
+    t = next((int(o[3:]) for o in opts if o.startswith('-t=')), None)
+    x = next((int(o[3:]) for o in opts if o.startswith('-x=')), None)
+    y = next((int(o[3:]) for o in opts if o.startswith('-y=')), None)
+
+    if '-i' in opts:
+        create(path, x, y, t)
+    else:
+        art, *_ = img2braile(path, x, y, t)
+        print(art)
+
+elif get_arts('-'.join(args)):
+    match opts:
+        case ['-i']:
             lines, number = -1, 0
             while 1:
                 sys.stdout.write(f'\033[{lines}A')
