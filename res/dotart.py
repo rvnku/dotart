@@ -48,11 +48,27 @@ def read_key():
     return ch
 
 
-def show(bd: list, index: int, hint: bool = False) -> int:
-    print('\033[97m' + bd[index] + '\033[0m',
+def invert_braile(text: str) -> str:
+    result = []
+    for char in text:
+        code = ord(char)
+        if 0x2800 <= code <= 0x28FF:
+            dots = code - 0x2800
+            inverted = dots ^ 0xFF
+            result.append(chr(0x2800 + inverted))
+        else:
+            result.append(char)
+    return ''.join(result)
+
+
+def show(bd: list, index: int, hint: bool = False, reverse: bool = False) -> int:
+    text = bd[index]
+    if reverse:
+        text = invert_braile(text)
+    print('\033[97m' + text + '\033[0m',
           f'Art: {index+1} / {len(bd)}', sep='\n')
     if hint:
-        print('[←→ move | enter exit]')
+        print('[←→ move | r reverse | enter exit]')
     return len(bd[index].split('\n')) + 1 + hint
 
 
@@ -143,27 +159,29 @@ if '-c' in opts:
         print(art)
 
 elif arts := get_arts('-'.join(args)):
-    match opts:
-        case ['-i']:
-            lines, number = -1, 0
-            while 1:
-                sys.stdout.write(f'\033[{lines}A')
-                for _ in range(lines):
-                    sys.stdout.write('\033[2K')
-                    sys.stdout.write('\033[1B')
-                sys.stdout.write(f'\033[{lines}A')
-                sys.stdout.flush()
-                
-                lines = show(arts, number, True)
-                key = read_key()
-                if key == '\x1b[D':
-                    number -= number > 0
-                if key == '\x1b[C':
-                    number += number < (len(arts) - 1)
-                if key == '\r':
-                    break
-        case _:
-            number = random.randrange(len(arts))
-            show(arts, number)
+    if '-i' in opts:
+        lines, number = -1, 0
+        reverse = '-r' in opts
+        while 1:
+            sys.stdout.write(f'\033[{lines}A')
+            for _ in range(lines):
+                sys.stdout.write('\033[2K')
+                sys.stdout.write('\033[1B')
+            sys.stdout.write(f'\033[{lines}A')
+            sys.stdout.flush()
+            
+            lines = show(arts, number, True, reverse)
+            key = read_key()
+            if key == '\x1b[D':
+                number -= number > 0
+            if key == '\x1b[C':
+                number += number < (len(arts) - 1)
+            if key == 'r':
+                reverse = not reverse
+            if key == '\r':
+                break
+    else:
+        number = random.randrange(len(arts))
+        show(arts, number, False, '-r' in opts)
 else:
     print('No art found v_v')
