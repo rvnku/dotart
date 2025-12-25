@@ -118,7 +118,7 @@ def create(path: str, cols: int = None, rows: int = None, threshold: int = None,
             cols, rows = None, max(5, rows - 1)
         elif key == 'r':
             reverse = not reverse
-            threshold = None
+            threshold = 255 - threshold
         elif key == '\r':
             break
 
