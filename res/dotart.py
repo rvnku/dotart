@@ -135,7 +135,7 @@ if '-c' in opts:
         art, *_ = img2braile(path, x, y, t)
         print(art)
 
-elif get_arts('-'.join(args)):
+elif arts := get_arts('-'.join(args)):
     match opts:
         case ['-i']:
             lines, number = -1, 0
