@@ -104,7 +104,7 @@ def create(path: str, cols: int = None, rows: int = None, threshold: int = None,
         sys.stdout.write('\033[H\033[J')
         print(art)
         print(f'Threshold: {threshold} | Size: {cols}x{rows}')
-        print('[←→ threshold | ↑↓ size | enter exit]')
+        print('[←→ threshold | ↑↓ size | r reverse | enter exit]')
 
         key = read_key()
 
@@ -116,6 +116,9 @@ def create(path: str, cols: int = None, rows: int = None, threshold: int = None,
             cols, rows = None, min(100, rows + 1)
         elif key == '\x1b[B':
             cols, rows = None, max(5, rows - 1)
+        elif key == 'r':
+            reverse = not reverse
+            threshold = None
         elif key == '\r':
             break
 

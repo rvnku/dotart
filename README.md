@@ -9,7 +9,7 @@ For install and adding into PATH run this command:
 ```bash
 git clone https://github.com/rvnku/dotart.git && \
 mkdir -p ~/.local/bin/res && \
-cp -r dotart/dotart dotart/res ~/.local/bin && \
+sudo cp -r dotart/dotart dotart/res ~/.local/bin && \
 rm -rf dotart
 ```
 
@@ -60,7 +60,8 @@ Or use `-i` option for interactive view for all arts
 UPD: You can use `-c` option for manually generating dot arts from images. 
 Whatever, option `-i` is working with generating mode too. 
 Also try `-x=<int>` and `-y=<int>` options for regulate the size 
-or `-t=<int>` option for regulate the threshold of output image.
+or `-t=<int>` option for regulate the threshold of output image
+or `-r` option for reverse.
 
 Examples of use generating mode:
 
