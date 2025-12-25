@@ -16,6 +16,7 @@ ALLOWED = ''\
 OPTIONS = {
     '-c': 'create art by yourself',
     '-i': 'interactive mode',
+    '-r': 'reverse color',
     '-t': 'set threshold',
     '-x': 'set width',
     '-y': 'set height',
@@ -63,10 +64,12 @@ def get_arts(query: str) -> list[str]:
     return list(t for t in [e.contents[0].text for e in divs] if check(t))
 
 
-def img2braile(path: str, cols: int = None, rows: int = None, threshold: int = None) -> str:
-    from PIL import Image
+def img2braile(path: str, cols: int = None, rows: int = None, threshold: int = None, reverse: bool = False) -> str:
+    from PIL import Image, ImageOps
 
     img = Image.open(path).convert('L')
+    if reverse:
+        img = ImageOps.invert(img)
 
     x, y = img.size
     ratio = x / y
@@ -95,9 +98,9 @@ def img2braile(path: str, cols: int = None, rows: int = None, threshold: int = N
     return '\n'.join(art), cols, rows, threshold
 
 
-def create(path: str, cols: int = None, rows: int = None, threshold: int = None):
+def create(path: str, cols: int = None, rows: int = None, threshold: int = None, reverse: bool = False):
     while 1:
-        art, cols, rows, threshold = img2braile(path, cols, rows, threshold)
+        art, cols, rows, threshold = img2braile(path, cols, rows, threshold, reverse)
         sys.stdout.write('\033[H\033[J')
         print(art)
         print(f'Threshold: {threshold} | Size: {cols}x{rows}')
@@ -128,11 +131,12 @@ if '-c' in opts:
     t = next((int(o[3:]) for o in opts if o.startswith('-t=')), None)
     x = next((int(o[3:]) for o in opts if o.startswith('-x=')), None)
     y = next((int(o[3:]) for o in opts if o.startswith('-y=')), None)
+    r = next((True for o in opts if o == '-r'), None)
 
     if '-i' in opts:
-        create(path, x, y, t)
+        create(path, x, y, t, r)
     else:
-        art, *_ = img2braile(path, x, y, t)
+        art, *_ = img2braile(path, x, y, t, r)
         print(art)
 
 elif arts := get_arts('-'.join(args)):
