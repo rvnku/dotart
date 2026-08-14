@@ -77,7 +77,7 @@ def get_arts(query: str) -> list[str]:
     response = requests.get(url)
     soup = bs4.BeautifulSoup(response.text, 'html.parser')
     divs = soup.find_all(class_='emojis')
-    return list(t for t in [e.contents[0].text for e in divs] if check(t))
+    return list(t for t in [e.text for e in divs] if check(t))
 
 
 def img2braile(path: str, cols: int = None, rows: int = None, threshold: int = None, reverse: bool = False) -> str:
