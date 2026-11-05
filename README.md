@@ -1,39 +1,26 @@
 # dotart
 
-shows random dot art in your terminal
+Shows random dot art in your terminal
 
 ## Install
 
-For install and adding into PATH run this command:
+Download binary file from releases page
+
+## Build
+
+Clone repository and build with cargo
 
 ```bash
-git clone https://github.com/rvnku/dotart.git && \
-mkdir -p ~/.local/bin/res && \
-sudo cp -r dotart/dotart dotart/res ~/.local/bin && \
-rm -rf dotart
-```
-
-If `.local/bin` is not in the PATH, you must add it there yourself:
-
-```bash
-export PATH="$PATH:~/.local/bin/"
-```
-
-The script used python >=3.10 with libraries requests, Beautiful Soup and Pillow.
-
-For install them, run:
-
-```bash
-pip install requests beautifulsoup4 pillow
-# or
-pipx install requests beautifulsoup4 pillow
+git clone https://github.com/rvnku/dotart.git
+cd dotart
+cargo build --release
 ```
 
 ## Usage
 
-Just write your request after command name:
+Just write your request after command name or path for image file:
 
-```bash
+```
 $ dotart boykisser
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡴⠛⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -53,28 +40,21 @@ $ dotart boykisser
 ⠀⠀⠀⠀⠀⠀⠈⠳⣄⠀⢿⣧⠀⠀⠘⠷⠾⠷⣼⣅⣀⣀⠀⠀⠀⠀⠀⠀⠸⡅⠀⠀⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠏⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠘⢧⡈⡿⣄⣀⣀⣀⣀⣀⣈⣳⣍⠉⠉⠛⢿⡛⢦⡼⠛⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠻⠻⠶⠿⠿⠷⠷⠿⠿⠾⠶⠶⠶⠶⠿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+Art: 9 / 86
 ```
 
-Or use `-i` option for interactive view for all arts
+The command help information:
 
-UPD: You can use `-c` option for manually generating dot arts from images. 
-Whatever, option `-i` is working with generating mode too. 
-Also try `-x=<int>` and `-y=<int>` options for regulate the size 
-or `-t=<int>` option for regulate the threshold of output image
-or `-r` option for reverse.
-
-Examples of use generating mode:
-
-```bash
-$ dotart -c input.png  # returns dot art with 25 rows by default
-$ dotart -i -c input.png  # interactive manage of size and threshold
-$ dotart -x=20 -y=10 -c input.png  # returns square image
 ```
+Usage: dotart [OPTIONS] <TARGET>
 
-## Uninstall
+Arguments:
+  <TARGET>  Path to image or query for search
 
-For uninstall just remove `dotart` and `res/dotart.py` files from `~/.local/bin` directory:
-
-```bash
-rm ~/.local/bin/dotart ~/.local/bin/res/dotart.py && rmdir ~/.local/bin/res 2>/dev/null
+Options:
+      --reverse                Replace dots and spaces in the image
+      --px <PX>                Image size along the short side (only for custom images)
+      --threshold <THRESHOLD>  Brightness threshold for the image (only for custom images) [default: 128]
+      --index <INDEX>          The number of the dotart (only for searched images)
+  -h, --help                   Print help
 ```
